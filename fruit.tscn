@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4g0pd6pfe7rp"]
+
+[ext_resource type="Script" path="res://fruit.gd" id="1_nivqb"]
+[ext_resource type="Texture2D" uid="uid://dqt6bfy54jo5p" path="res://cherry.png" id="2_u1vjm"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cgq6k"]
+friction = 0.5
+bounce = 0.1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_os6i4"]
+radius = 50.0
+
+[node name="Fruit" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cgq6k")
+max_contacts_reported = 5
+contact_monitor = true
+script = ExtResource("1_nivqb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.333, 0.333)
+shape = SubResource("CircleShape2D_os6i4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.333, 0.333)
+texture = ExtResource("2_u1vjm")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

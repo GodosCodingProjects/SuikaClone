@@ -1,0 +1,109 @@
+[gd_scene load_steps=14 format=3 uid="uid://bwl4jcdk05sfh"]
+
+[ext_resource type="PackedScene" uid="uid://be476sx0lcxs" path="res://wall.tscn" id="1_he1sr"]
+[ext_resource type="Script" path="res://main_scene.gd" id="1_to4yq"]
+[ext_resource type="PackedScene" uid="uid://d4g0pd6pfe7rp" path="res://fruit.tscn" id="2_avsaw"]
+[ext_resource type="Texture2D" uid="uid://bbr644d7ms2b8" path="res://background.png" id="3_0m24j"]
+[ext_resource type="Script" path="res://danger_zone.gd" id="4_wshcb"]
+[ext_resource type="Script" path="res://lose_button.gd" id="5_vw2gv"]
+[ext_resource type="Script" path="res://score.gd" id="6_kij8w"]
+[ext_resource type="AudioStream" uid="uid://cquo58u0so2hw" path="res://pop-1-35897.mp3" id="7_3kqmj"]
+[ext_resource type="Texture2D" uid="uid://b2tnwa6ctl4g6" path="res://jar.png" id="8_sa0bt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pwdvy"]
+size = Vector2(1050, 50)
+
+[sub_resource type="LabelSettings" id="LabelSettings_53nxr"]
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_fuyy0"]
+font_size = 48
+
+[sub_resource type="LabelSettings" id="LabelSettings_6g483"]
+font_size = 48
+
+[node name="MainScene" type="Node2D"]
+script = ExtResource("1_to4yq")
+Fruit = ExtResource("2_avsaw")
+
+[node name="BG" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+texture = ExtResource("3_0m24j")
+
+[node name="Wall" parent="." instance=ExtResource("1_he1sr")]
+visible = false
+position = Vector2(232, 0)
+
+[node name="Wall2" parent="." instance=ExtResource("1_he1sr")]
+visible = false
+position = Vector2(820, 0)
+scale = Vector2(0.24, 1)
+
+[node name="Wall3" parent="." instance=ExtResource("1_he1sr")]
+visible = false
+position = Vector2(75, 648)
+scale = Vector2(10, 0.1)
+
+[node name="DangerZone" type="Area2D" parent="."]
+position = Vector2(575, 18)
+script = ExtResource("4_wshcb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DangerZone"]
+shape = SubResource("RectangleShape2D_pwdvy")
+
+[node name="Button" type="Button" parent="."]
+visible = false
+z_index = 1
+offset_left = 331.0
+offset_top = 45.0
+offset_right = 819.0
+offset_bottom = 647.0
+disabled = true
+text = "You Lost!"
+script = ExtResource("5_vw2gv")
+
+[node name="Timer" type="Timer" parent="Button"]
+one_shot = true
+
+[node name="Score" type="Label" parent="."]
+offset_left = 100.0
+offset_top = 150.0
+offset_right = 241.0
+offset_bottom = 220.0
+text = "Score:"
+label_settings = SubResource("LabelSettings_53nxr")
+script = ExtResource("6_kij8w")
+
+[node name="Number" type="Label" parent="Score"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 70.0
+offset_right = 118.0
+offset_bottom = 140.0
+text = "9999"
+label_settings = SubResource("LabelSettings_fuyy0")
+
+[node name="Pop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_3kqmj")
+
+[node name="Jar" type="Sprite2D" parent="."]
+position = Vector2(575, 345)
+texture = ExtResource("8_sa0bt")
+
+[node name="Next" type="Label" parent="."]
+offset_left = 880.0
+offset_top = 150.0
+offset_right = 1010.0
+offset_bottom = 222.0
+text = "Next:"
+label_settings = SubResource("LabelSettings_6g483")
+
+[node name="Fruit" parent="Next" instance=ExtResource("2_avsaw")]
+position = Vector2(55, 110)
+
+[connection signal="body_entered" from="DangerZone" to="DangerZone" method="_on_body_entered"]
+[connection signal="body_exited" from="DangerZone" to="DangerZone" method="_on_body_exited"]
+[connection signal="game_lost" from="DangerZone" to="." method="_on_danger_zone_game_lost"]
+[connection signal="game_lost" from="DangerZone" to="Button" method="_on_danger_zone_game_lost"]
+[connection signal="pressed" from="Button" to="Button" method="_on_pressed"]
+[connection signal="timeout" from="Button/Timer" to="Button" method="_on_timer_timeout"]
